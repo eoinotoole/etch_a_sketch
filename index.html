@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Etch a sketch</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            margin: 0 auto;
+
+            width: 60vh;
+            height: 60vh;
+
+            background-color: #000;
+
+            border: 1px solid #d5d5d5;
+
+            display: flex;
+            flex-flow: column;
+        }
+
+        .row {
+            display: flex;
+            flex-flow: row;
+            flex-grow: 1;
+        }
+
+        .box {
+            flex-grow: 1;
+            background: #f0f0f0;
+
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <ul>
+            <li>
+                <button class="clear">Clear</button>
+            </li>
+            <li>
+                <button class="choose-dimensions">Choose dimensions</button>
+            </li>
+        </ul>
+
+    </div>
+    <div class="container"></div>
+
+    <script>
+        var container = document.querySelector('.container');
+        var clear = document.querySelector('.clear');
+        var chooseDimensions = document.querySelector('.choose-dimensions');
+
+        buildGrid(16);
+
+
+        clear.addEventListener('click', function (e) {
+            e.preventDefault();
+            clearGridStyles();
+        });
+
+        chooseDimensions.addEventListener('click', function (e) {
+            e.preventDefault();
+            var newDimensions;
+            do {
+                newDimensions = prompt('How many boxes would you like per row?');
+            } while (newDimensions === '')
+            if (newDimensions > 64 || newDimensions < 1) {
+                do {
+                    newDimensions = prompt('Box amount must be between 1 and 64. Try again');
+                } while (newDimensions === '' || newDimensions < 1 || newDimensions > 64);
+            }
+            clearGrid();
+            buildGrid(newDimensions);
+        });
+
+        function buildGrid(dimensions) {
+            for (var i = 0; i < dimensions; i++) {
+                var row = document.createElement('div');
+                row.className = "row";
+
+                for (var j = 0; j < dimensions; j++) {
+                    var box = document.createElement('div');
+                    box.className = "box";
+                    box.style.opacity = 1;
+                    row.appendChild(box);
+                    box.addEventListener('mouseover', function () {
+                        if (!this.classList.contains('active')) {
+                            this.style.background = 'rgb(' + Math.floor((Math.random() * 255 + 1)) + ', ' + Math.floor((Math.random() * 255 + 1)) + ', ' + Math.floor((Math.random() * 255 + 1)) + ')';
+                            this.classList.add('active');
+                        } else {
+                            this.style.opacity = this.style.opacity - .1;
+                        }
+                    });
+                }
+                container.appendChild(row);
+            }
+        }
+
+        function clearGridStyles() {
+            var boxes = document.querySelectorAll('.box');
+            boxes.forEach(function (box) {
+                box.style.background = '';
+            });
+        }
+
+        function clearGrid() {
+            container.innerHTML = '';
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
